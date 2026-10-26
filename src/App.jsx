@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import './App.css'
 
+const operators = ["+", "-", "*", "/"];
+
 const btnValues = [
   "7", "8", "9", "/",
   "4", "5", "6", "*",
@@ -10,8 +12,6 @@ const btnValues = [
 
 function App() {
   const [input, setInput] = useState("");
-
-  console.log(input);
   
   return (
     <div className='wrapper-calculator'>
@@ -28,7 +28,9 @@ function App() {
 
               let sum = input;
 
-              let tokens = sum.match(/\d+|\+|\-|\*|\//g);
+              let tokens = sum.match(/(?<=[+*/(-]|^)-\d+|\d+|\+|\-|\*|\//g);
+
+              console.log(tokens);
 
               for (let i = 0; i < tokens.length; i++) {
                 if (tokens[i] === "/" || tokens[i] === "*") {
@@ -44,6 +46,8 @@ function App() {
 
               let total = Number(tokens[0]);
 
+              console.log(Number(tokens[0]));
+
               for (let i = 1; i < tokens.length; i += 2) {
                 let operator = tokens[i];
                 let next = tokens[i + 1];
@@ -56,77 +60,27 @@ function App() {
               
               return String(total);
             })}>{value}</div>
-          } else if (value === "+") {
-            return <div key={value} className='button-number' onClick={() => setInput(input => {
-              if (input.length === 0) {
-                return "";
-              }
+          } else if (operators.includes(value)) {
+              return <div key={value} className='button-number' onClick={() => setInput(input => {
+                if (input.length === 0) {
+                  if (value === "-") {
+                    return value;
+                  }
+                  
+                  return "";
+                }
 
-              let currentInput = String(input);
+                let currentInput = String(input);
 
-              if (currentInput.endsWith("+") ||
-                  currentInput.endsWith("-") ||
-                  currentInput.endsWith("/") ||
-                  currentInput.endsWith("*")
-              ) {
-                return currentInput;
-              }
+                if (currentInput.endsWith("+") ||
+                    currentInput.endsWith("-") ||
+                    currentInput.endsWith("/") ||
+                    currentInput.endsWith("*")
+                ) {
+                  return currentInput;
+                }
 
-              return currentInput + "+";
-            })}>{value}</div>
-          } else if (value === "-") {
-            return <div key={value} className='button-number' onClick={() => setInput(input => {
-              if (input.length === 0) {
-                return "";
-              }
-              
-              let currentInput = String(input);
-
-              if (currentInput.endsWith("+") ||
-                  currentInput.endsWith("-") ||
-                  currentInput.endsWith("/") ||
-                  currentInput.endsWith("*")
-              ) {
-                return currentInput;
-              }
-
-              return currentInput + "-";
-            })}>{value}</div>
-          } else if (value === "/") {
-            return <div key={value} className='button-number' onClick={() => setInput(input => {
-              if (input.length === 0) {
-                return "";
-              }
-
-              let currentInput = String(input);
-
-              if (currentInput.endsWith("+") ||
-                  currentInput.endsWith("-") ||
-                  currentInput.endsWith("/") ||
-                  currentInput.endsWith("*")
-              ) {
-                return currentInput;
-              }
-
-              return currentInput + "/";
-            })}>{value}</div>
-          } else if (value === "*") {
-            return <div key={value} className='button-number' onClick={() => setInput(input => {
-              if (input.length === 0) {
-                return "";
-              }
-
-              let currentInput = String(input);
-
-              if (currentInput.endsWith("+") ||
-                  currentInput.endsWith("-") ||
-                  currentInput.endsWith("/") ||
-                  currentInput.endsWith("*")
-              ) {
-                return currentInput;
-              }
-
-              return currentInput + "*";
+                return currentInput + value;
             })}>{value}</div>
           }
           

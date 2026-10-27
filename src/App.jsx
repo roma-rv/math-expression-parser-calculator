@@ -25,7 +25,17 @@ function App() {
               if (!input) {
                 return "";
               }
-
+              
+              if (input === "Error") {
+                return "";
+              }
+              
+              if (operators.some(operator => input.endsWith(operator))) {
+                return "Error";
+              }
+            
+              console.log(input);
+            
               let sum = input;
 
               let tokens = sum.match(/(?<=[+*/(-]|^)-\d+|\d+|\+|\-|\*|\//g);
@@ -62,6 +72,10 @@ function App() {
             })}>{value}</div>
           } else if (operators.includes(value)) {
               return <div key={value} className='button-number' onClick={() => setInput(input => {
+                if (input === "Error") {
+                  return "";
+                }
+                
                 if (input.length === 0) {
                   if (value === "-") {
                     return value;
@@ -72,11 +86,7 @@ function App() {
 
                 let currentInput = String(input);
 
-                if (currentInput.endsWith("+") ||
-                    currentInput.endsWith("-") ||
-                    currentInput.endsWith("/") ||
-                    currentInput.endsWith("*")
-                ) {
+                if (operators.some(operator => input.endsWith(operator))) {
                   return currentInput;
                 }
 
@@ -85,7 +95,13 @@ function App() {
           }
           
           else {
-            return <div key={value} className='button-number' onClick={() => setInput(input => input + value)}>{value}</div>
+            return <div key={value} className='button-number' onClick={() => setInput(input => {
+              if (input === "Error") {
+                  return value;
+                }
+
+              return input + value;
+            })}>{value}</div>
           }
         }
         )}
